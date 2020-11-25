@@ -61,10 +61,13 @@ class BulkSell {
 
             int itemPrice = SellItem(player, item, validTraderIds);
 
-            if(itemPrice > 0){
+            if(itemPrice > 0)
+            {
                 total_sell_value += itemPrice;
                 sold_items_count++;
-            } else {
+            } 
+            else
+            {
                 current_item++; // skip the item
                 unsold_items_count++;
             }
@@ -83,7 +86,7 @@ class BulkSell {
         }
 
         if(unsold_items_count > 0){
-            string unsoldMessage = string.Format("%1 items could not be sold.", unsold_items_count);
+            string unsoldMessage = string.Format("%1 items could not be sold", unsold_items_count);
             Kat_DebugPrint(unsoldMessage);
             TraderMessage.PlayerRed(unsoldMessage, player);
         }
