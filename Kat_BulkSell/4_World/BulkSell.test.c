@@ -29,7 +29,7 @@ class BulkSellTest {
         // consumable too low
         itemName = "BandageDressing";
         quantity = 1; // max is 4
-        expected = -1;
+        expected = BulkSell.ERROR_ITEM_QUANTITY;
         result = result && TestItem(player, itemName, quantity, expected, validTraders);
 
         // ammo stack full
@@ -47,7 +47,7 @@ class BulkSellTest {
         // steak empty
         itemName = "GoatSteakMeat";
         quantity = 1; // max is 150
-        expected = -1;
+        expected = BulkSell.ERROR_ITEM_QUANTITY;
         result = result && TestItem(player, itemName, quantity, expected, validTraders);
         // steak full
         itemName = "GoatSteakMeat";
@@ -86,7 +86,7 @@ class BulkSellTest {
         validTraders = { 0 }; // consume trader
         itemName = "Mag_Glock_15Rnd";
         quantity = 0;
-        expected = -1; // trader 3 not in range
+        expected = BulkSell.ERROR_TRADER_RANGE; // trader 3 not in range
         result = result && TestItem(player, itemName, quantity, expected, validTraders);
 
         // second trader that is in range while the first trader for the item is NOT in range

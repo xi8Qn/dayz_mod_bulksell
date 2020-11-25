@@ -11,7 +11,7 @@ class ActionBulkSell : ActionContinuousBase
 
     void ActionBulkSell()
     {
-        Kat_InfoPrint("mod version 1.1.0");
+        Kat_InfoPrint("mod version 1.2.0"); // TODO move this somewhere else?
         m_CallbackClass = ActionBulkSellCB;
         m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_CRAFTING;
         m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
@@ -40,7 +40,9 @@ class ActionBulkSell : ActionContinuousBase
 
         // Only show action if it's not locked or empty
         if (myItem && myItem.GetInventory().IsInventoryUnlocked() && myItem.GetNumberOfItems() > 0)
+        {
             return true;
+        }
         return false;
     }
 

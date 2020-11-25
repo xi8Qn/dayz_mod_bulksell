@@ -2,7 +2,16 @@
 
 class BulkSell {
 
-    static const int CONST_TRADER_SELL_DISTANCE = 50; // overwrite this to change the distance
+    static const int CONST_TRADER_SELL_DISTANCE = 50; // overwrite this to change the trader-barrel distance
+
+    // magic error return values
+    static const int ERROR_NULL = -1;
+    static const int ERROR_TRADER_RANGE = -2;
+    static const int ERROR_ITEM_NO_VALUE = -3;
+    static const int ERROR_ITEM_ATTACHED = -4;
+    static const int ERROR_ITEM_NOT_CONFIGURED = -5;
+    static const int ERROR_ITEM_QUANTITY = -6;
+    static const int ERROR_ITEM_RUINED = -7;
 
     static void SellAllItems(PlayerBase player, EntityAI container)
 	{
@@ -34,8 +43,10 @@ class BulkSell {
 
         container.GetInventory().LockInventory(HIDE_INV_FROM_SCRIPT);
 
+        int sold_items_count = 0;
         int total_sell_value = 0;
         int current_item = 0;
+        int unsold_items_count = 0;
         while (true)
         {
             int item_count = cargo.GetItemCount();
@@ -52,18 +63,30 @@ class BulkSell {
 
             if(itemPrice > 0){
                 total_sell_value += itemPrice;
+                sold_items_count++;
             } else {
                 current_item++; // skip the item
+                unsold_items_count++;
             }
         }
 
-        // add money to player
-        Kat_DebugPrint(string.Format("Adding money: %1", total_sell_value));
-        player.increasePlayerCurrency(total_sell_value);
-
-        TraderMessage.PlayerWhite(string.Format("Sold items for %1", total_sell_value), player);
-
         container.GetInventory().UnlockInventory(HIDE_INV_FROM_SCRIPT);
+
+        if (sold_items_count > 0)
+        {
+            // add money to player
+            player.increasePlayerCurrency(total_sell_value);
+            string message = string.Format("Sold %1 items for %2", sold_items_count, total_sell_value);
+
+            Kat_DebugPrint(message);
+            TraderMessage.PlayerWhite(message, player);
+        }
+
+        if(unsold_items_count > 0){
+            string unsoldMessage = string.Format("%1 items could not be sold.", unsold_items_count);
+            Kat_DebugPrint(unsoldMessage);
+            TraderMessage.PlayerRed(unsoldMessage, player);
+        }
 
     }
 
@@ -107,14 +130,14 @@ class BulkSell {
         if (!item)
         {
             Kat_ErrorPrint("Invalid item reference");
-            return -1; // try the next item
+            return ERROR_NULL; // try the next item
         }
 
         InventoryLocation myInvLoc = new InventoryLocation;
         if (!item.GetInventory().GetCurrentInventoryLocation(myInvLoc))
         {
             Kat_ErrorPrint("No item location");
-            return -1; // try the next item
+            return ERROR_NULL; // try the next item
         }
 
         // find item in trader list
@@ -122,7 +145,7 @@ class BulkSell {
         if (itemPrice <= 0)
         {
             Kat_DebugPrint("Can't sell item: no value");
-            return -1;
+            return itemPrice;
         }
 
         // delete the item
@@ -137,27 +160,27 @@ class BulkSell {
         if (!player)
         {
             Kat_ErrorPrint("GetItemSellValue: No player");
-            return -2;
+            return ERROR_NULL;
         }
         if(!player.m_Trader_ItemsClassnames)
         {
             Kat_ErrorPrint("GetItemSellValue: missing m_Trader_ItemsClassnames");
-            return -2;
+            return ERROR_NULL;
         }
         if(!player.m_Trader_ItemsTraderId)
         {
             Kat_ErrorPrint("GetItemSellValue: missing m_Trader_ItemsTraderId");
-            return -2;
+            return ERROR_NULL;
         }
         if(!player.m_Trader_ItemsSellValue)
         {
             Kat_ErrorPrint("GetItemSellValue: missing m_Trader_ItemsSellValue");
-            return -2;
+            return ERROR_NULL;
         }
         if(!player.m_Trader_ItemsQuantity)
         {
             Kat_ErrorPrint("GetItemSellValue: missing m_Trader_ItemsQuantity");
-            return -2;
+            return ERROR_NULL;
         }
 
         string itemName = item.GetType();
@@ -193,31 +216,31 @@ class BulkSell {
         if (!itemFound)
         {
             Kat_ErrorPrint(string.Format("Item missing in trader data: %1", itemName));
-            return -2;
+            return ERROR_ITEM_NOT_CONFIGURED;
         }
 
-        if (!sell_price)
+        if (sell_price <= 0)
         {
-            Kat_ErrorPrint(string.Format("Item has no sell price: %1", itemName));
-            return -2;
+            Kat_DebugPrint(string.Format("Item has no sell price: %1", itemName));
+            return ERROR_ITEM_NO_VALUE;
         }
 
         if(index < 0){
             Kat_DebugPrint("item is not available at any nearby trader -- ignoring");
-            return -1;
+            return ERROR_TRADER_RANGE;
         }
 
         if (item.IsRuined())
         {
             Kat_DebugPrint("item is ruined, can't sell");
-            return -1;
+            return ERROR_ITEM_RUINED;
         }
 
         // TODO better check, and recursivly sell containers?
         if (player.isAttached(item))
         {
             Kat_DebugPrint("item is attached");
-            return -1;
+            return ERROR_ITEM_ATTACHED;
         }
 
         int trader_amount = player.m_Trader_ItemsQuantity.Get(index);
@@ -227,7 +250,7 @@ class BulkSell {
         if (item_amount < 0)
         {
             Kat_DebugPrint(string.Format("Item amount too low: %1", item_amount));
-            return -1;
+            return ERROR_ITEM_QUANTITY;
         }
 
         int price_final = Math.Floor(sell_price * item_amount);
