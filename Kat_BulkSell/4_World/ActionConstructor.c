@@ -4,5 +4,6 @@ modded class ActionConstructor
     {
         super.RegisterActions(actions);
         actions.Insert(ActionBulkSell);
+        actions.Insert(ActionBulkSellForce);
     }
 };

@@ -13,7 +13,7 @@ class BulkSell {
     static const int ERROR_ITEM_QUANTITY = -6;
     static const int ERROR_ITEM_RUINED = -7;
 
-    static void SellAllItems(PlayerBase player, ItemBase container)
+    static void SellAllItems(PlayerBase player, ItemBase container, bool force)
 	{
         if (!player)
         {
@@ -61,7 +61,7 @@ class BulkSell {
 
             ItemBase item = ItemBase.Cast(cargo.GetItem(current_item));
 
-            int itemPrice = SellItem(player, item, validTraderIds);
+            int itemPrice = SellItem(player, item, validTraderIds, force);
 
             if(itemPrice > 0)
             {
@@ -70,7 +70,10 @@ class BulkSell {
             } 
             else
             {
-                current_item++; // skip the item
+                if (!force) 
+                {
+                    current_item++; // if not force, it still exists -> skip the item
+                }
                 unsold_items_count++;
             }
         }
@@ -87,12 +90,21 @@ class BulkSell {
             TraderMessage.PlayerWhite(message, player);
         }
 
-        if(unsold_items_count > 0){
-            string unsoldMessage = string.Format("%1 items could not be sold", unsold_items_count);
+        if(unsold_items_count > 0)
+        {
+            string unsoldMessage;
+            if(!force)
+            {
+                unsoldMessage = string.Format("%1 items could not be sold", unsold_items_count);
+            }
+            else 
+            {
+                unsoldMessage = string.Format("%1 items had no value", unsold_items_count);
+            }
             Kat_DebugPrint(unsoldMessage);
             TraderMessage.PlayerRed(unsoldMessage, player);
         }
-
+        
     }
 
     // Get all traders in range of the player
@@ -107,7 +119,7 @@ class BulkSell {
         {
             Kat_ErrorPrint("GetTradersInRange: missing m_Trader_TraderIDs");
             return;
-        }        
+        }
         if(!player.m_Trader_TraderPositions)
         {
             Kat_ErrorPrint("GetTradersInRange: missing m_Trader_TraderPositions");
@@ -130,7 +142,7 @@ class BulkSell {
         }
     }
 
-    static int SellItem(PlayerBase player, ItemBase item, array<int> validTraderIds)
+    static int SellItem(PlayerBase player, ItemBase item, array<int> validTraderIds, bool force)
     {
         if (!item)
         {
@@ -149,6 +161,11 @@ class BulkSell {
         int itemPrice = GetItemSellValue(player, item, validTraderIds);
         if (itemPrice <= 0)
         {
+            if(force){
+                Kat_DebugPrint("Forced selling of the item");
+                itemPrice = 0;
+            }
+
             Kat_DebugPrint("Can't sell item: no value");
             return itemPrice;
         }

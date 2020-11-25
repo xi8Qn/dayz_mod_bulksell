@@ -6,6 +6,7 @@ class Kat_Static_SellBarrel : Barrel_Green
     {
         super.SetActions();
         AddAction(ActionBulkSell);
+        AddAction(ActionBulkSellForce);
     }
 
     override bool CanPutInCargo(EntityAI parent)

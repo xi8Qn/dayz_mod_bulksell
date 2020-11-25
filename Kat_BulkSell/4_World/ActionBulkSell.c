@@ -25,7 +25,7 @@ class ActionBulkSell : ActionContinuousBase
 
     override string GetText()
     {
-        return "Sell all items";
+        return "Sell items";
     }
 
     override typename GetInputType()
@@ -52,6 +52,6 @@ class ActionBulkSell : ActionContinuousBase
         PlayerBase player = PlayerBase.Cast(action_data.m_Player);
         ItemBase container = ItemBase.Cast(action_data.m_Target.GetObject());
 
-        BulkSell.SellAllItems(player, container);
+        BulkSell.SellAllItems(player, container, false);
     }
 };
