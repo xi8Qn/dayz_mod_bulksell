@@ -9,7 +9,14 @@ class ActionBulkSellCB : ActionContinuousBaseCB
 class ActionBulkSell : ActionContinuousBase
 {
 
+    bool m_force = false;
+
     void ActionBulkSell()
+    {
+        init()
+    }
+
+    void init()
     {
         Kat_InfoPrint("mod version 1.2.0"); // TODO move this somewhere else?
         m_CallbackClass = ActionBulkSellCB;
@@ -47,11 +54,11 @@ class ActionBulkSell : ActionContinuousBase
 
     override void OnFinishProgressServer(ActionData action_data)
     {
-        Kat_DebugPrint("starting bulk sell");
+        Kat_DebugPrint(string.Format("starting bulk sell (force=%1)", m_force));
 
         PlayerBase player = PlayerBase.Cast(action_data.m_Player);
         ItemBase container = ItemBase.Cast(action_data.m_Target.GetObject());
 
-        BulkSell.SellAllItems(player, container, false);
+        BulkSell.SellAllItems(player, container, m_force);
     }
 };
