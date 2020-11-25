@@ -35,11 +35,10 @@ class ActionBulkSell : ActionContinuousBase
 
     override bool ActionCondition(PlayerBase player, ActionTarget target, ItemBase item)
     {
-        Object targetObject = target.GetObject();
-        Kat_Static_SellBarrel myItem = Kat_Static_SellBarrel.Cast(targetObject);
+        ItemBase container = ItemBase.Cast(target.GetObject());
 
         // Only show action if it's not locked or empty
-        if (myItem && myItem.GetInventory().IsInventoryUnlocked() && myItem.GetNumberOfItems() > 0)
+        if (container && container.GetInventory().IsInventoryUnlocked() && container.GetNumberOfItems() > 0)
         {
             return true;
         }
@@ -51,7 +50,7 @@ class ActionBulkSell : ActionContinuousBase
         Kat_DebugPrint("starting bulk sell");
 
         PlayerBase player = PlayerBase.Cast(action_data.m_Player);
-        Kat_Static_SellBarrel container = Kat_Static_SellBarrel.Cast(action_data.m_Target.GetObject());
+        ItemBase container = ItemBase.Cast(action_data.m_Target.GetObject());
 
         BulkSell.SellAllItems(player, container);
     }

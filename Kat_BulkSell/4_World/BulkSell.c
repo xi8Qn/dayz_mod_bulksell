@@ -13,7 +13,7 @@ class BulkSell {
     static const int ERROR_ITEM_QUANTITY = -6;
     static const int ERROR_ITEM_RUINED = -7;
 
-    static void SellAllItems(PlayerBase player, EntityAI container)
+    static void SellAllItems(PlayerBase player, ItemBase container)
 	{
         if (!player)
         {
@@ -27,13 +27,15 @@ class BulkSell {
             return;
         }
 
-        if (!container){
+        if (!container)
+		{
             Kat_ErrorPrint("invalid container");
             return;
         }
 
         CargoBase cargo = container.GetInventory().GetCargo();
-        if (cargo == NULL){
+        if (cargo == NULL)
+		{
             Kat_ErrorPrint("no target cargo");
             return;
         }
