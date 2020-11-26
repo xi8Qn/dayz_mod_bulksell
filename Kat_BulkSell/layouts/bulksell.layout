@@ -1,0 +1,67 @@
+PanelWidgetClass rootFrame {
+ clipchildren 1
+ inheritalpha 0
+ color 0.1137 0.1137 0.1137 1
+ size 700 800
+ halign center_ref
+ valign center_ref
+ hexactpos 1
+ vexactpos 1
+ hexactsize 1
+ vexactsize 1
+ style rover_sim_colorable
+ {
+  TextListboxWidgetClass itemsList {
+   position 25.0587 23.9122
+   size 649.29901 0.75848
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 0
+   "title visible" 1
+   colums "Item;70%;Value;0"
+   lines 15
+   "highlight row" 0
+   font "gui/fonts/etelkatextpro"
+  }
+  ButtonWidgetClass sellButton {
+   position 466.03799 692.21503
+   size 190.91798 48
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "SELL ALL"
+   font "gui/fonts/etelkatextpro"
+  }
+  TextWidgetClass amountLabel {
+   ignorepointer 1
+   position 38.781 692.21503
+   size 405.15698 48
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "Total amount:"
+   font "gui/fonts/etelkatextpro"
+   "size to text h" 1
+   "size to text v" 0
+   "text valign" center
+  }
+  TextWidgetClass amountValue {
+   ignorepointer 1
+   position 229.356 692.21503
+   size 154.136 48
+   hexactpos 1
+   vexactpos 1
+   hexactsize 1
+   vexactsize 1
+   text "0"
+   font "gui/fonts/etelkatextpro"
+   "size to text h" 0
+   "size to text v" 0
+   "text halign" right
+   "text valign" center
+  }
+ }
+}
