@@ -1,7 +1,7 @@
 
 class BulkSellTest {
 
-    
+
     // "unit test" -> these expect a default trader config
     static bool TestGetItemSellValue(PlayerBase player)
     {
@@ -58,6 +58,12 @@ class BulkSellTest {
         itemName = "GoatSteakMeat";
         quantity = 80; // max is 150
         expected = 1;
+        result = result && TestItem(player, itemName, quantity, expected, validTraders);
+
+        // food that is not steak
+        itemName = "Tomato";
+        quantity = -1; // "*"
+        expected = 10; // custom configured value (default trader config is -1, which obviously is no use for these tests)
         result = result && TestItem(player, itemName, quantity, expected, validTraders);
 
         // mag full
