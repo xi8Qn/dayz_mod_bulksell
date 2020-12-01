@@ -67,7 +67,7 @@ class BulkSell {
             {
                 total_sell_value += itemPrice;
                 sold_items_count++;
-            } 
+            }
             else
             {
                 current_item++; // skip the item
@@ -107,7 +107,7 @@ class BulkSell {
         {
             Kat_ErrorPrint("GetTradersInRange: missing m_Trader_TraderIDs");
             return;
-        }        
+        }
         if(!player.m_Trader_TraderPositions)
         {
             Kat_ErrorPrint("GetTradersInRange: missing m_Trader_TraderPositions");
@@ -194,7 +194,7 @@ class BulkSell {
         int index = -1;
         int sell_price = -1;
         bool itemFound = false;
-        
+
         foreach(int i, string name: player.m_Trader_ItemsClassnames) {
             if (itemName == name){
                 itemFound = true; // item was found, but perhaps not in a nearby trader
@@ -216,7 +216,7 @@ class BulkSell {
                 break; // done searching, can be sold at a nearby trader!
             }
         }
-    
+
         // if the item was not found at all
         if (!itemFound)
         {
@@ -296,9 +296,9 @@ class BulkSell {
         if (quantityType == QUANTITY_PROGRESS)
         {
             // only sell progress items if they are above the trader amount
-            if (item_amount > trader_amount)
+            if (item_amount >= trader_amount)
             {
-                return 1; // it's a full/unused item (or atleast above the value, the trader sells it)
+                return 1; // it's a full/unused item (or atleast above the value that the trader sells it at)
             }
 
             Kat_DebugPrint("item is partially used or empty");
