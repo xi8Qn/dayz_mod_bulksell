@@ -11,7 +11,7 @@ class ActionBulkSell : ActionContinuousBase
 
     void ActionBulkSell()
     {
-        Kat_InfoPrint("mod version 1.2.1"); // TODO move this somewhere else?
+        Kat_InfoPrint("mod version 1.3.0"); // TODO move this somewhere else?
         m_CallbackClass = ActionBulkSellCB;
         m_CommandUID = DayZPlayerConstants.CMD_ACTIONMOD_CRAFTING;
         m_StanceMask = DayZPlayerConstants.STANCEMASK_CROUCH | DayZPlayerConstants.STANCEMASK_ERECT;
